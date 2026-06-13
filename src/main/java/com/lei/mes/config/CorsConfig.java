@@ -4,12 +4,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 /**
- * @author lei
  * Web 配置类 ，跨域配置
+ * @author lei
  */
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class CorsConfig implements WebMvcConfigurer {
 
     private static final long MAX_AGE = 3600L; // 1小时
     @Override
