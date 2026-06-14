@@ -50,9 +50,9 @@
 - [x] 实现用户分页查询、新增、编辑、删除、状态切换
 
 ### Task 2.2 - JWT 工具类 🔴
-- [ ] 创建 `JwtUtils` 工具类（生成 Token、解析 Token、验证 Token）
-- [ ] 实现 Token 过期时间配置
-- [ ] 实现从 Token 提取用户名和用户 ID
+- [x] 创建 `JwtUtils` 工具类（生成 Token、解析 Token、验证 Token）
+- [x] 实现 Token 过期时间配置
+- [x] 实现从 Token 提取用户名和用户 ID
 
 ### Task 2.3 - 登录认证 🔴
 - [ ] 创建 `AuthController`（登录接口）

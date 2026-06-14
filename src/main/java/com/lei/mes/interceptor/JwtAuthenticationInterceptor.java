@@ -53,6 +53,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private String resolveToken(HttpServletRequest request) {
+        // 从请求头中获取 Authorization: Bearer xxx 格式的 Token
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7);

@@ -44,7 +44,6 @@ public class UserController {
     }
 
     /**
-     * todo 解决获取不了当前用户问题
      * 获取当前登录用户
      * @return 当前登录用户信息
      */
