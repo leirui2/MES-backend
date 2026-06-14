@@ -20,7 +20,7 @@ public class UserSaveRequest implements Serializable {
     private Long id;
 
     @NotBlank(message = "用户名不能为空")
-    @Size(min = 6, max = 20, message = "用户名长度必须在6-20个字符之间")
+    @Size(min = 4, max = 20, message = "用户名长度必须在4-20个字符之间")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "用户名只能包含字母、数字和下划线")
     private String username;
 
@@ -28,6 +28,8 @@ public class UserSaveRequest implements Serializable {
     @Size(min = 6, max = 20, message = "密码长度必须在6-20个字符之间")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "密码只能包含字母、数字和下划线")
     private String password;
+    @NotBlank(message = "真实姓名不能为空")
+    @Size(min = 2, max = 10, message = "真实姓名长度必须在2-10个字符之间")
     private String realName;
 
     @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确")

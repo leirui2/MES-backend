@@ -55,10 +55,10 @@
 - [x] 实现从 Token 提取用户名和用户 ID
 
 ### Task 2.3 - 登录认证 🔴
-- [ ] 创建 `AuthController`（登录接口）
-- [ ] 实现 BCrypt 密码加密比对
-- [ ] 登录成功返回 Token + 用户信息
-- [ ] 登录失败返回统一错误信息
+- [x] 创建 `AuthController`（登录接口）
+- [x] 实现 BCrypt 密码加密比对
+- [x] 登录成功返回 Token + 用户信息
+- [x] 登录失败返回统一错误信息
 
 ### Task 2.4 - JWT 拦截器 🔴
 - [ ] 创建 `JwtInterceptor` 实现 `HandlerInterceptor`

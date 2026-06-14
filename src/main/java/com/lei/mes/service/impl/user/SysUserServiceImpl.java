@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +35,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     @Autowired
     private JwtUtils jwtUtils;
 
+    //注入加盐算法
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public IPage<SysUser> getUserPage(int pageNum, int pageSize, String username) {
@@ -71,10 +75,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
         // 设置默认值
         user.setId(null);
-        user.setStatus(1); // 默认启用
-        // TODO: 密码 BCrypt 加密（登录模块完成后使用 BCryptPasswordEncoder）
-        // user.setPassword(passwordEncoder.encode(request.getPassword()));
-
+        // 状态默认启用
+        user.setStatus(1);
+        // 密码 BCrypt 加密
+        user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        user.setRealName(request.getRealName());
         this.save(user);
         log.info("新增用户成功: {}", request.getUsername());
     }
@@ -148,8 +153,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         if (existing.getStatus() == 0) {
             throw new BusinessException(400, "当前登录用户已禁用");
         }
-        // TODO: 密码校验（登录模块完成后使用 BCryptPasswordEncoder）
-        if (!request.getPassword().equals(existing.getPassword())) {
+
+        // 密码校验（matches 方法内部处理盐值提取与比对）
+        if (!bCryptPasswordEncoder.matches(request.getPassword(), existing.getPassword())) {
             throw new BusinessException(400, "当前登录用户密码错误");
         }
         String accessToken = jwtUtils.generateAccessToken(existing.getId(),existing.getUsername());

@@ -19,7 +19,7 @@ public class UserLoginRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "用户名不能为空")
-    @Size(min = 6, max = 20, message = "用户名长度必须在6-20个字符之间")
+    @Size(min = 4, max = 20, message = "用户名长度必须在4-20个字符之间")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "用户名只能包含字母、数字和下划线")
     private String username;
     @NotBlank(message = "密码不能为空")

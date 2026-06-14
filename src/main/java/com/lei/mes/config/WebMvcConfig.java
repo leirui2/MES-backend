@@ -27,6 +27,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtAuthenticationInterceptor(jwtUtils, sysUserService))
                 .addPathPatterns("/**")           // 拦截所有路径
-                .excludePathPatterns("/api/sys/user/login", "/api/sys/sys/user/register", "/public/**"); // 排除登录、注册等
+                .excludePathPatterns("/api/sys/user/login", "/public/**"); // 排除登录、注册等
     }
 }
