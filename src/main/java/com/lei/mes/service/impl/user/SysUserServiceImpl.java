@@ -7,12 +7,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lei.mes.entity.user.SysUser;
 import com.lei.mes.exception.BusinessException;
 import com.lei.mes.mapper.user.SysUserMapper;
+import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
+import com.lei.mes.util.JwtUtils;
+import com.lei.mes.vo.LoginResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.net.http.HttpRequest;
 
 /**
  * 用户表 Service 实现
@@ -22,6 +29,11 @@ import org.springframework.util.StringUtils;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         implements SysUserService {
+
+    //  JWT 工具类
+    @Autowired
+    private JwtUtils jwtUtils;
+
 
     @Override
     public IPage<SysUser> getUserPage(int pageNum, int pageSize, String username) {
@@ -119,4 +131,42 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         this.updateById(update);
         log.info("切换用户状态成功: ID={}, status={}", id, status);
     }
+
+    /**
+     * 用户登录
+     * @param request 用户请求体
+     * @return 登录响应
+         */
+    @Override
+    public LoginResponse login(UserLoginRequest request) {
+        // 检查用户是否存在
+        SysUser existing = this.getOne(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getUsername, request.getUsername()));
+        if (existing == null) {
+            throw new BusinessException(404, "当前登录用户不存在或已删除");
+        }
+        if (existing.getStatus() == 0) {
+            throw new BusinessException(400, "当前登录用户已禁用");
+        }
+        // TODO: 密码校验（登录模块完成后使用 BCryptPasswordEncoder）
+        if (!request.getPassword().equals(existing.getPassword())) {
+            throw new BusinessException(400, "当前登录用户密码错误");
+        }
+        String accessToken = jwtUtils.generateAccessToken(existing.getId(),existing.getUsername());
+        String refreshToken = jwtUtils.generateRefreshToken(existing.getUsername());
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setAccessToken(accessToken);
+        loginResponse.setRefreshToken(refreshToken);
+        loginResponse.setUserId(existing.getId());
+        loginResponse.setUsername(existing.getUsername());
+        loginResponse.setRealName(existing.getRealName());
+        loginResponse.setEmail(existing.getEmail());
+        loginResponse.setPhone(existing.getPhone());
+        return loginResponse;
+    }
+
+
+
+
+
 }

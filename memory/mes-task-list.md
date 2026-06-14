@@ -43,11 +43,11 @@
 ## 第二阶段：权限管理模块（第 1 周）
 
 ### Task 2.1 - 用户管理 🔴
-- [ ] 创建 `SysUser` 实体类（Lombok + MyBatis-Plus 注解）
-- [ ] 创建 `SysUserMapper` 接口
-- [ ] 创建 `SysUserService` + `SysUserServiceImpl`
-- [ ] 创建 `SysUserController`（CRUD 接口）
-- [ ] 实现用户分页查询、新增、编辑、删除、状态切换
+- [x] 创建 `SysUser` 实体类（Lombok + MyBatis-Plus 注解）
+- [x] 创建 `SysUserMapper` 接口
+- [x] 创建 `SysUserService` + `SysUserServiceImpl`
+- [x] 创建 `SysUserController`（CRUD 接口）
+- [x] 实现用户分页查询、新增、编辑、删除、状态切换
 
 ### Task 2.2 - JWT 工具类 🔴
 - [ ] 创建 `JwtUtils` 工具类（生成 Token、解析 Token、验证 Token）

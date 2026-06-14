@@ -4,15 +4,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lei.mes.common.Result;
 import com.lei.mes.entity.user.SysUser;
 import com.lei.mes.exception.BusinessException;
+import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
+import com.lei.mes.util.JwtUtils;
+import com.lei.mes.vo.LoginResponse;
 import com.lei.mes.vo.user.UserVO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.http.HttpRequest;
 
 /**
  * 用户管理 Controller
@@ -25,6 +31,34 @@ public class UserController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    /**
+     * 用户登录
+     * @param request 用户登录请求体
+     * @return 登录响应
+     */
+    @PostMapping("/login")
+    public Result<LoginResponse> login(@Valid @RequestBody UserLoginRequest request){
+       LoginResponse loginResponse = sysUserService.login(request);
+       return Result.success(loginResponse);
+    }
+
+    /**
+     * todo 解决获取不了当前用户问题
+     * 获取当前登录用户
+     * @return 当前登录用户信息
+     */
+     @GetMapping("/current")
+     public Result<UserVO> getCurrentUser(HttpServletRequest request) {
+        // 从请求中使用拦截器设置的 attribute获取当前登录用户
+        SysUser user = (SysUser) request.getAttribute("currentUser");
+        if (user == null) {
+            return Result.error(404, "当前登录用户不存在或已删除");
+        }
+        UserVO vo = new UserVO();
+        BeanUtils.copyProperties(user, vo);
+        return Result.success(vo);
+     }
 
     /**
      * 分页查询用户列表

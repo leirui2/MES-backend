@@ -8,6 +8,20 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: localhost   #连接地址
+      port: 6379        #连接端口
+      password:         #密码（未设置则为空）
+      database: 0       #数据库索引（默认0）
+      lettuce:          # 使用 Lettuce 客户端（默认）
+        pool:
+          max-active: 8   # 最大连接数
+          max-idle: 8     # 最大空闲连接
+          min-idle: 0     # 最小空闲连接
+          max-wait: 1000ms  # 最大等待时间
+
+
 mybatis-plus:
   # 实体类扫描包路径
   type-aliases-package: com.lei.mes.entity
@@ -23,3 +37,8 @@ mybatis-plus:
       logic-delete-field: isDelete      # 全局逻辑删除字段名
       logic-delete-value: 1              # 已删除值
       logic-not-delete-value: 0          # 未删除值
+
+jwt:
+  secret: Y2hhcmdlci1tZXMtc2VjcmV0LWtleS1tdXN0LWJlLXN1ZmZpY2llbnRseS1sb25nLWZvci1zZWN1cml0eQ==  # 需要 ≥32 字符的 Base64 字符串
+  access-expiration: 86400000      # 访问 Token 过期时间：24小时（毫秒）
+  refresh-expiration: 604800000    # 刷新 Token 过期时间：7天（毫秒）

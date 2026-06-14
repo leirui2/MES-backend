@@ -3,7 +3,13 @@ package com.lei.mes.service.user;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lei.mes.entity.user.SysUser;
+import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
+import com.lei.mes.vo.LoginResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+
+import java.net.http.HttpRequest;
 
 /**
  * 用户表 Service
@@ -44,4 +50,13 @@ public interface SysUserService extends IService<SysUser> {
      * @param status 状态
      */
     void changeStatus(Long id, Integer status);
+
+    /**
+     * 用户登录
+     * @param request 用户请求体
+     * @return 登录响应
+     */
+    LoginResponse login(@Valid UserLoginRequest request);
+
+
 }
