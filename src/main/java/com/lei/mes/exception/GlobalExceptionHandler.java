@@ -22,7 +22,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     /**
-     * 参数校验异常
+     * valid 参数校验异常
+     * @author lei
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Result> handleValidException(MethodArgumentNotValidException e) {
