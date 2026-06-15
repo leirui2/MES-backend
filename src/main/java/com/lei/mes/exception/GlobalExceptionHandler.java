@@ -4,6 +4,7 @@ import com.lei.mes.common.ErrorCode;
 import com.lei.mes.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +54,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
         log.warn("请求方法不支持: {}", e.getMessage());
         return ResponseEntity.status(405).body(Result.error(ErrorCode.METHOD_NOT_ALLOWED));
+    }
+
+    /**
+     * 400 - 请求体为空
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Result> handleNotReadable(HttpMessageNotReadableException e) {
+        log.warn("请求体为空: {}", e.getMessage());
+        return ResponseEntity.badRequest().body(Result.error(400, "请求体不能为空"));
     }
 
     /**

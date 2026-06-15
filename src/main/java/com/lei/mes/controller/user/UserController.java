@@ -32,16 +32,6 @@ public class UserController {
     @Autowired
     private SysUserService sysUserService;
 
-    /**
-     * 用户登录
-     * @param request 用户登录请求体
-     * @return 登录响应
-     */
-    @PostMapping("/login")
-    public Result<LoginResponse> login(@Valid @RequestBody UserLoginRequest request){
-       LoginResponse loginResponse = sysUserService.login(request);
-       return Result.success(loginResponse);
-    }
 
     /**
      * 获取当前登录用户
@@ -98,7 +88,7 @@ public class UserController {
     public Result<Void> add(@Valid @RequestBody UserSaveRequest request) {
         try {
             sysUserService.addUser(request);
-            return Result.success();
+            return Result.success("新增成功", null);
         } catch (BusinessException e) {
             return Result.error(e.getCode(), e.getMessage());
         }

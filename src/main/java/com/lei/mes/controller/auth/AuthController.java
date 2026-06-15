@@ -1,0 +1,38 @@
+package com.lei.mes.controller.auth;
+
+import com.lei.mes.common.Result;
+import com.lei.mes.request.user.UserLoginRequest;
+import com.lei.mes.service.user.SysUserService;
+import com.lei.mes.vo.LoginResponse;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 认证管理 Controller
+ * @author lei
+ */
+@Slf4j
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private SysUserService sysUserService;
+
+    /**
+     * 用户登录
+     * @param request 用户登录请求体
+     * @return 登录响应
+     */
+    @PostMapping("/login")
+    public Result<LoginResponse> login(@Valid @RequestBody UserLoginRequest request){
+        LoginResponse loginResponse = sysUserService.login(request);
+        return Result.success(loginResponse);
+    }
+
+}
