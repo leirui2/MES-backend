@@ -3,6 +3,7 @@ package com.lei.mes.exception;
 import com.lei.mes.common.ErrorCode;
 import com.lei.mes.common.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -65,6 +66,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Result.error(400, "请求体不能为空"));
     }
 
+    /**
+     * 数据库唯一约束冲突（主键、唯一索引重复）
+     */
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Result> handleDuplicateKeyException(DuplicateKeyException e) {
+        log.warn("数据重复: {}", e.getMessage());
+        String message = "数据已存在，请勿重复操作";
+        // 可选：从原始异常中解析冲突值，给前端更具体的提示
+        if (e.getCause() instanceof java.sql.SQLIntegrityConstraintViolationException) {
+            String causeMsg = e.getCause().getMessage();
+            if (causeMsg != null && causeMsg.contains("Duplicate entry")) {
+                message = "记录已存在，违反唯一约束";
+            }
+        }
+        return ResponseEntity.status(400).body(Result.error(400, message));
+    }
     /**
      * 兜底 - 捕获所有未处理的异常
      */

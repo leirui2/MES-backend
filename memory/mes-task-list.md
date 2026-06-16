@@ -61,14 +61,14 @@
 - [x] 登录失败返回统一错误信息
 
 ### Task 2.4 - JWT 拦截器 🔴
-- [ ] 创建 `JwtInterceptor` 实现 `HandlerInterceptor`
-- [ ] 拦截需要认证的接口，解析 Token 放入 ThreadLocal
-- [ ] 放行白名单接口（/login、/register、静态资源）
-- [ ] 在 `WebMvcConfig` 中注册拦截器
+- [x] 创建 `JwtInterceptor` 实现 `HandlerInterceptor`
+- [x] 拦截需要认证的接口，解析 Token 放入 ThreadLocal
+- [x] 放行白名单接口（/login、/register、静态资源）
+- [x] 在 `WebMvcConfig` 中注册拦截器
 
 ### Task 2.5 - 角色管理 🟡
-- [ ] 创建 `SysRole` 实体 + Mapper + Service + Controller
-- [ ] 实现角色 CRUD
+- [x] 创建 `SysRole` 实体 + Mapper + Service + Controller
+- [x] 实现角色 CRUD
 - [ ] 实现角色-菜单关联接口
 
 ### Task 2.6 - 菜单管理 🟡

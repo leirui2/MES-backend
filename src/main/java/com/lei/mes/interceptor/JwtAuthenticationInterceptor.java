@@ -1,8 +1,8 @@
 package com.lei.mes.interceptor;
 
-import com.lei.mes.entity.user.SysUser;
-import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.JwtUtils;
+import com.lei.mes.util.UserContext;
+import com.lei.mes.util.UserContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,11 +14,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
     private final JwtUtils jwtUtils;
-    private final SysUserService sysUserService;
 
-    public JwtAuthenticationInterceptor(JwtUtils jwtUtils, SysUserService sysUserService) {
+    public JwtAuthenticationInterceptor(JwtUtils jwtUtils ) {
         this.jwtUtils = jwtUtils;
-        this.sysUserService = sysUserService;
     }
 
     @Override
@@ -38,18 +36,24 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // 2. 提取用户信息（可考虑缓存，避免每次查库）
+        // 2. 从token中提取用户信息
         Long userId = jwtUtils.extractUserId(token);
-        SysUser user = sysUserService.getById(userId);
-        if (user == null || user.getStatus() == 0) {
-            response.setStatus(401);
-            response.getWriter().write("{\"code\":401,\"message\":\"用户不存在或已禁用\"}");
-            return false;
-        }
+        String userName = jwtUtils.extractUsername(token);
 
-        // 3. 将用户信息存入 request attribute，供后续 Controller/Service 使用
-        request.setAttribute("currentUser", user);
+        // 3. 将用户信息存入 ThreadLocal，供后续 Controller/Service 使用
+        UserContext userContext = new UserContext();
+        userContext.setUserId(userId);
+        userContext.setUserName(userName);
+        //存入
+        UserContextHolder.setUserContext(userContext);
         return true; // 放行
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+                                Object handler, Exception ex) throws Exception {
+        // 清除 ThreadLocal 中的用户信息
+        UserContextHolder.remove();
     }
 
     private String resolveToken(HttpServletRequest request) {

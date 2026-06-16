@@ -56,7 +56,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param request 用户请求体
      * @return 登录响应
      */
-    LoginResponse login(@Valid UserLoginRequest request);
+    LoginResponse login( UserLoginRequest request);
 
 
 }

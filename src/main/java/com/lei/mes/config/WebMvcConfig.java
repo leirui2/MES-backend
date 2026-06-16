@@ -1,7 +1,6 @@
 package com.lei.mes.config;
 
 import com.lei.mes.interceptor.JwtAuthenticationInterceptor;
-import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.JwtUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -15,18 +14,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final JwtUtils jwtUtils;
-    private final SysUserService sysUserService;
 
     // 构造函数注入
-    public WebMvcConfig(JwtUtils jwtUtils, SysUserService sysUserService) {
+    public WebMvcConfig(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.sysUserService = sysUserService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new JwtAuthenticationInterceptor(jwtUtils, sysUserService))
+        registry.addInterceptor(new JwtAuthenticationInterceptor(jwtUtils))
                 .addPathPatterns("/**")           // 拦截所有路径
-                .excludePathPatterns("/auth/login", "/api/sys/user/login", "/public/**"); // 排除登录、注册等
+                .excludePathPatterns("/auth/login", "/auth/register", "/public/**"); // 排除登录、注册等
     }
 }

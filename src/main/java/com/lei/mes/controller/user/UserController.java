@@ -8,9 +8,10 @@ import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.JwtUtils;
+import com.lei.mes.util.UserContextHolder;
 import com.lei.mes.vo.LoginResponse;
+import com.lei.mes.util.UserContext;
 import com.lei.mes.vo.user.UserVO;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpRequest;
 
 /**
  * 用户管理 Controller
@@ -38,9 +38,10 @@ public class UserController {
      * @return 当前登录用户信息
      */
      @GetMapping("/current")
-     public Result<UserVO> getCurrentUser(HttpServletRequest request) {
-        // 从请求中使用拦截器设置的 attribute获取当前登录用户
-        SysUser user = (SysUser) request.getAttribute("currentUser");
+     public Result<UserVO> getCurrentUser() {
+        // 从拦截器设置的 ThreadLocal获取当前登录用户
+        UserContext userContext =  UserContextHolder.getUserContext();
+        SysUser user = sysUserService.getById(userContext.getUserId());
         if (user == null) {
             return Result.error(404, "当前登录用户不存在或已删除");
         }
