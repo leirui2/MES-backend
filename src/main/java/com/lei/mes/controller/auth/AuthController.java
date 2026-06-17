@@ -3,7 +3,7 @@ package com.lei.mes.controller.auth;
 import com.lei.mes.common.Result;
 import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.service.user.SysUserService;
-import com.lei.mes.vo.LoginResponse;
+import com.lei.mes.vo.user.LoginResponseVO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +30,9 @@ public class AuthController {
      * @return 登录响应
      */
     @PostMapping("/login")
-    public Result<LoginResponse> login(@Valid @RequestBody UserLoginRequest request){
-        LoginResponse loginResponse = sysUserService.login(request);
-        return Result.success(loginResponse);
+    public Result<LoginResponseVO> login(@Valid @RequestBody UserLoginRequest request){
+        LoginResponseVO loginResponseVO = sysUserService.login(request);
+        return Result.success(loginResponseVO);
     }
 
 }

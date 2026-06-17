@@ -5,12 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lei.mes.entity.user.SysUser;
 import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
-import com.lei.mes.vo.LoginResponse;
+import com.lei.mes.vo.user.LoginResponseVO;
 import com.lei.mes.vo.user.UserVO;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-
-import java.net.http.HttpRequest;
 
 /**
  * 用户表 Service
@@ -25,7 +21,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param username 搜索关键词（账号/姓名模糊匹配）
      * @return 分页结果
      */
-    IPage<SysUser> getUserPage(int pageNum, int pageSize, String username);
+    IPage<UserVO> getUserPage(int pageNum, int pageSize, String username);
 
     /**
      * 新增用户
@@ -57,7 +53,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param request 用户请求体
      * @return 登录响应
      */
-    LoginResponse login( UserLoginRequest request);
+    LoginResponseVO login(UserLoginRequest request);
 
     /**
      * 根据用户ID查询用户VO

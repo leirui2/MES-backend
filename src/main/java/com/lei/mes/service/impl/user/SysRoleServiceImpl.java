@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
+ * 角色服务实现类
 * @author lei
 * @description 针对表【sys_role(角色表)】的数据库操作Service实现
 * @createDate 2026-06-16 16:23:20

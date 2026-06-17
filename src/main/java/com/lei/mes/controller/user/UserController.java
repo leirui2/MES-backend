@@ -2,21 +2,15 @@ package com.lei.mes.controller.user;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lei.mes.common.Result;
-import com.lei.mes.entity.user.SysUser;
 import com.lei.mes.exception.BusinessException;
-import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
-import com.lei.mes.util.JwtUtils;
 import com.lei.mes.util.UserContextHolder;
-import com.lei.mes.vo.LoginResponse;
 import com.lei.mes.util.UserContext;
 import com.lei.mes.vo.user.UserVO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -57,13 +51,8 @@ public class UserController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(required = false) String username) {
 
-        IPage<SysUser> page = sysUserService.getUserPage(pageNum, pageSize, username);
-        IPage<UserVO> voPage = page.convert(user -> {
-            UserVO vo = new UserVO();
-            BeanUtils.copyProperties(user, vo);
-            return vo;
-        });
-        return Result.success(voPage);
+        IPage<UserVO> page = sysUserService.getUserPage(pageNum, pageSize, username);
+        return Result.success(page);
     }
 
     /**
@@ -71,12 +60,10 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public Result<UserVO> getById(@PathVariable Long id) {
-        SysUser user = sysUserService.getById(id);
-        if (user == null) {
+        UserVO vo = sysUserService.getUserVoById(id);
+        if (vo == null) {
             return Result.error(404, "用户不存在或已删除");
         }
-        UserVO vo = new UserVO();
-        BeanUtils.copyProperties(user, vo);
         return Result.success(vo);
     }
 

@@ -5,15 +5,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lei.mes.entity.user.SysUser;
+import com.lei.mes.entity.user.SysUserRole;
 import com.lei.mes.exception.BusinessException;
 import com.lei.mes.mapper.user.SysUserMapper;
+import com.lei.mes.mapper.user.SysUserRoleMapper;
 import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.JwtUtils;
-import com.lei.mes.vo.LoginResponse;
+import com.lei.mes.vo.user.LoginResponseVO;
 import com.lei.mes.vo.user.UserVO;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.net.http.HttpRequest;
+import java.util.stream.Collectors;
 
 /**
  * 用户表 Service 实现
@@ -32,7 +33,9 @@ import java.net.http.HttpRequest;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         implements SysUserService {
 
+    // 构造函数注入 SysUserMapper 和 SysUserRoleMapper
     private final SysUserMapper sysUserMapper;
+    private final SysUserRoleMapper sysUserRoleMapper;
 
     //  JWT 工具类
     @Autowired
@@ -43,30 +46,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     //final修饰必须 构造函数注入 SysUserMapper
-    public SysUserServiceImpl(SysUserMapper sysUserMapper) {
+    public SysUserServiceImpl(SysUserMapper sysUserMapper, SysUserRoleMapper sysUserRoleMapper) {
         this.sysUserMapper = sysUserMapper;
+        this.sysUserRoleMapper = sysUserRoleMapper;
     }
 
 
     @Override
-    public IPage<SysUser> getUserPage(int pageNum, int pageSize, String username) {
-        // 构建分页对象
-        Page<SysUser> page = new Page<>(pageNum, pageSize);
-
-        // 构建查询条件（自动排除逻辑删除数据）
-        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        if (StringUtils.hasText(username)) {
-            // 账号或姓名模糊匹配
-            wrapper.and(w -> w
-                    .like(SysUser::getUsername, username)
-                    .or()
-                    .like(SysUser::getRealName, username)
-            );
-        }
-        // 按创建时间倒序
-        wrapper.orderByDesc(SysUser::getCreatedAt);
-
-        return this.page(page, wrapper);
+    public IPage<UserVO> getUserPage(int pageNum, int pageSize, String username) {
+        Page<UserVO> page = new Page<>(pageNum, pageSize);
+        return sysUserMapper.getUserVoPage(page, username);
     }
 
     @Override
@@ -88,8 +77,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         user.setStatus(1);
         // 密码 BCrypt 加密
         user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
-        user.setRealName(request.getRealName());
+
         this.save(user);
+
+        // 新增：角色绑定关系表中新增用户角色绑定关系
+        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+            // 新增用户角色绑定关系
+            sysUserRoleMapper.insertBatch(request.getRoleIds().stream()
+                    .map(roleId -> new SysUserRole(user.getId(), roleId))
+                    .collect(Collectors.toList()));
+            log.info("新增用户角色绑定关系成功: ID={}", user.getId());
+        }
+
         log.info("新增用户成功: {}", request.getUsername());
     }
 
@@ -113,7 +112,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         SysUser update = new SysUser();
         BeanUtils.copyProperties(request, update);
 
+        // 如果传了新密码，加密后再存
+        if (StringUtils.hasText(request.getPassword())) {
+            update.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        } else {
+            update.setPassword(existing.getPassword());
+        }
+
         this.updateById(update);
+        // 更新用户角色绑定关系
+
+        // 更新角色绑定：先删后增
+        sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
+                .eq(SysUserRole::getUserId, update.getId()));
+        log.info("更新用户角色绑定关系成功: ID={}", update.getId());
+
+        // 新增角色绑定
+        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+            sysUserRoleMapper.insertBatch(request.getRoleIds().stream()
+                    .map(roleId -> new SysUserRole(update.getId(), roleId))
+                    .collect(Collectors.toList()));
+            log.info("更新用户角色绑定关系成功: ID={}", update.getId());
+        }
+
         log.info("更新用户成功: ID={}", request.getId());
     }
 
@@ -125,7 +146,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
             throw new BusinessException(404, "用户不存在或已删除");
         }
 
+        // 检查sys_user_role表中用户是否已经绑定角色
+//        QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("user_id", id);
+//        long roleCount = sysUserRoleMapper.selectCount(queryWrapper);
+//        if (roleCount > 0) {
+//            // 如果用户绑定角色，删除sys_user_role表中用户绑定的角色
+//            sysUserRoleMapper.delete(queryWrapper);
+//            log.info("删除用户绑定的角色成功: ID={}", id);
+//        }
         // 逻辑删除（MyBatis-Plus @TableLogic 自动转 UPDATE SET is_delete=1）
+        // 直接逻辑删除，角色绑定保留（不影响查询）
         this.removeById(id);
         log.info("删除用户成功: ID={}", id);
     }
@@ -152,7 +183,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
      * @return 登录响应
          */
     @Override
-    public LoginResponse login(UserLoginRequest request) {
+    public LoginResponseVO login(UserLoginRequest request) {
         // 检查用户是否存在
         SysUser existing = this.getOne(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getUsername, request.getUsername()));
@@ -169,15 +200,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         }
         String accessToken = jwtUtils.generateAccessToken(existing.getId(),existing.getUsername());
         String refreshToken = jwtUtils.generateRefreshToken(existing.getUsername());
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setAccessToken(accessToken);
-        loginResponse.setRefreshToken(refreshToken);
-        loginResponse.setUserId(existing.getId());
-        loginResponse.setUsername(existing.getUsername());
-        loginResponse.setRealName(existing.getRealName());
-        loginResponse.setEmail(existing.getEmail());
-        loginResponse.setPhone(existing.getPhone());
-        return loginResponse;
+        LoginResponseVO loginResponseVO = new LoginResponseVO();
+        loginResponseVO.setAccessToken(accessToken);
+        loginResponseVO.setRefreshToken(refreshToken);
+        UserVO userVO = sysUserMapper.getUserVoById(existing.getId());
+        loginResponseVO.setUserId(userVO.getId());
+        loginResponseVO.setUsername(userVO.getUsername());
+        loginResponseVO.setRealName(userVO.getRealName());
+        loginResponseVO.setEmail(userVO.getEmail());
+        loginResponseVO.setPhone(userVO.getPhone());
+        loginResponseVO.setRoles(userVO.getRoles());
+        return loginResponseVO;
     }
 
     /**
