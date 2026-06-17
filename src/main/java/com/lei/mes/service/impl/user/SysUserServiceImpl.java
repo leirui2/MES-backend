@@ -12,6 +12,7 @@ import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.JwtUtils;
 import com.lei.mes.vo.LoginResponse;
+import com.lei.mes.vo.user.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,8 @@ import java.net.http.HttpRequest;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         implements SysUserService {
 
+    private final SysUserMapper sysUserMapper;
+
     //  JWT 工具类
     @Autowired
     private JwtUtils jwtUtils;
@@ -38,6 +41,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     //注入加盐算法
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    //final修饰必须 构造函数注入 SysUserMapper
+    public SysUserServiceImpl(SysUserMapper sysUserMapper) {
+        this.sysUserMapper = sysUserMapper;
+    }
+
 
     @Override
     public IPage<SysUser> getUserPage(int pageNum, int pageSize, String username) {
@@ -171,8 +180,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         return loginResponse;
     }
 
-
-
+    /**
+     * 根据用户ID查询用户VO
+     * @param userId 用户ID
+     * @return 用户VO
+     */
+    @Override
+    public UserVO getUserVoById(Long userId) {
+        UserVO vo = sysUserMapper.getUserVoById(userId);
+        if (vo == null) {
+            throw new BusinessException(404, "当前登录用户不存在或已删除");
+        }
+        if (vo.getStatus() == 0 ){
+            throw new BusinessException(400, "当前登录用户已禁用");
+        }
+        return vo;
+    }
 
 
 }

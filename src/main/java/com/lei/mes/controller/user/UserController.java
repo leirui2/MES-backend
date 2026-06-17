@@ -41,12 +41,10 @@ public class UserController {
      public Result<UserVO> getCurrentUser() {
         // 从拦截器设置的 ThreadLocal获取当前登录用户
         UserContext userContext =  UserContextHolder.getUserContext();
-        SysUser user = sysUserService.getById(userContext.getUserId());
-        if (user == null) {
+        UserVO vo = sysUserService.getUserVoById(userContext.getUserId());
+        if (vo == null) {
             return Result.error(404, "当前登录用户不存在或已删除");
         }
-        UserVO vo = new UserVO();
-        BeanUtils.copyProperties(user, vo);
         return Result.success(vo);
      }
 

@@ -3,6 +3,7 @@ package com.lei.mes.vo.user;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户详情 VO（返回给前端）
@@ -19,6 +20,10 @@ public class UserVO {
     private String email;
     private String avatar;
     private Integer status;
+
+    //角色列表
+    private List<RoleVO> roles;
+
     private Long deptId;
     private Date lastLoginTime;
     private String lastLoginIp;
