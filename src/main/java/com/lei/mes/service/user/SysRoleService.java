@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lei.mes.entity.user.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lei.mes.request.user.RoleSaveRequest;
+import com.lei.mes.vo.user.RoleVO;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 /**
 * @author lei
@@ -37,4 +40,14 @@ public interface SysRoleService extends IService<SysRole> {
      * 更新角色状态
      */
     void changeStatus(Long id, Integer status);
+
+    /**
+     * 获取角色详情（含菜单列表）
+     */
+    RoleVO getRoleVoById(Long roleId);
+
+    /**
+     * 更新角色的菜单关联
+     */
+    void updateRoleMenus(Long roleId, List<Long> menuIds);
 }

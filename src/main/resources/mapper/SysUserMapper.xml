@@ -27,6 +27,65 @@
     </sql>
 
 
+
+    <!-- 根据id查询用户及角色和菜单 -->
+    <resultMap id="UserVOResultMap" type="com.lei.mes.vo.user.UserVO">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="realName" column="realName"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="avatar" column="avatar"/>
+        <result property="status" column="status"/>
+
+        <!-- 角色列表 -->
+        <collection property="roles" ofType="com.lei.mes.vo.user.RoleVO">
+            <id property="roleId" column="roleId"/>
+            <result property="roleName" column="roleName"/>
+            <result property="roleCode" column="roleCode"/>
+
+            <!-- 菜单列表 -->
+            <collection property="menus" ofType="com.lei.mes.vo.user.MenuVO">
+                <id property="menuId" column="menuId"/>
+                <result property="menuName" column="menuName"/>
+                <result property="menuCode" column="menuCode"/>
+                <result property="url" column="url"/>
+                <result property="icon" column="icon"/>
+                <result property="sortOrder" column="sortOrder"/>
+                <result property="perms" column="perms"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getUserVoById" resultMap="UserVOResultMap">
+        SELECT
+            u.id AS id,
+            u.username AS username,
+            u.real_name AS realName,
+            u.phone AS phone,
+            u.email AS email,
+            u.avatar AS avatar,
+            u.status AS status,
+            r.id AS roleId,
+            r.role_name AS roleName,
+            r.role_code AS roleCode,
+            m.id AS menuId,
+            m.menu_name AS menuName,
+            m.menu_code AS menuCode,
+            m.url AS url,
+            m.icon AS icon,
+            m.sort_order AS sortOrder,
+            m.perms AS perms
+        FROM sys_user u
+                 LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+                 LEFT JOIN sys_role r ON ur.role_id = r.id AND r.is_delete = 0
+                 LEFT JOIN sys_role_menu rm ON r.id = rm.role_id
+                 LEFT JOIN sys_menu m ON rm.menu_id = m.id AND m.is_delete = 0
+        WHERE u.id = #{userId} AND u.is_delete = 0
+    </select>
+
+
+    <!-- 分页查询用户VO -->
     <!-- 用户详情结果映射 -->
     <resultMap id="userDetailResultMap" type="com.lei.mes.vo.user.UserVO">
         <id column="id" property="id"/>
@@ -47,19 +106,6 @@
             <result column="role_code" property="roleCode"/>
         </collection>
     </resultMap>
-    <!-- 根据id查询用户信息 -->
-    <select id="getUserVoById" resultMap="userDetailResultMap">
-        SELECT u.id, u.username, u.real_name, u.phone, u.email,
-               u.avatar, u.status, u.dept_id,ur.role_id,
-               r.role_name, r.role_code,u.last_login_time,
-               u.created_at, u.updated_at
-        FROM sys_user u
-                 LEFT JOIN sys_user_role ur ON u.id = ur.user_id
-                 LEFT JOIN sys_role r ON ur.role_id = r.id
-        WHERE u.id = #{userId} AND u.is_delete = 0;
-    </select>
-
-    <!-- 分页查询用户VO -->
     <select id="getUserVoPage" resultMap="userDetailResultMap">
         SELECT u.id, u.username, u.real_name, u.phone, u.email,
         u.avatar, u.status, u.dept_id, ur.role_id,

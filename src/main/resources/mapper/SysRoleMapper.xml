@@ -19,4 +19,42 @@
         id,role_name,role_code,description,status,created_at,
         updated_at,is_delete
     </sql>
+
+
+    <!-- 查询角色及关联的菜单 -->
+    <resultMap id="RoleVOResultMap" type="com.lei.mes.vo.user.RoleVO">
+        <id property="roleId" column="roleId"/>
+        <result property="roleName" column="roleName"/>
+        <result property="roleCode" column="roleCode"/>
+        <collection property="menus" ofType="com.lei.mes.vo.user.MenuVO">
+            <id property="menuId" column="menuId"/>
+            <result property="menuName" column="menuName"/>
+            <result property="menuCode" column="menuCode"/>
+            <result property="menuType" column="menuType"/>
+            <result property="url" column="url"/>
+            <result property="icon" column="icon"/>
+            <result property="sortOrder" column="sortOrder"/>
+            <result property="perms" column="perms"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRoleVoById" resultMap="RoleVOResultMap">
+        SELECT
+            r.id AS roleId,
+            r.role_name AS roleName,
+            r.role_code AS roleCode,
+            m.id AS menuId,
+            m.menu_name AS menuName,
+            m.menu_code AS menuCode,
+            m.menu_type AS menuType,
+            m.url AS url,
+            m.icon AS icon,
+            m.sort_order AS sortOrder,
+            m.perms AS perms
+        FROM sys_role r
+                 LEFT JOIN sys_role_menu rm ON r.id = rm.role_id
+                 LEFT JOIN sys_menu m ON rm.menu_id = m.id AND m.is_delete = 0
+        WHERE r.id = #{roleId} AND r.is_delete = 0
+    </select>
+
 </mapper>

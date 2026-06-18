@@ -2,6 +2,9 @@ package com.lei.mes.mapper.user;
 
 import com.lei.mes.entity.user.SysRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lei.mes.vo.user.RoleVO;
+import com.lei.mes.vo.user.UserVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author lei
@@ -11,6 +14,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
+
+    /**
+     * 查询角色及菜单（新增）
+     */
+    RoleVO getRoleVoById(@Param("roleId") Long roleId);
 }
 
 

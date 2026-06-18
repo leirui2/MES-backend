@@ -11,12 +11,15 @@ import com.lei.mes.service.user.SysRoleService;
 import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.UserContext;
 import com.lei.mes.util.UserContextHolder;
+import com.lei.mes.vo.user.RoleVO;
 import com.lei.mes.vo.user.UserVO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -51,7 +54,7 @@ public class RoleController {
     }
 
     /**
-     * 根据 ID 查询角色详情
+     * 根据角色 ID 查询角色详情
      */
     @GetMapping("/{id}")
     public Result<SysRole> getById(@PathVariable Long id) {
@@ -113,4 +116,29 @@ public class RoleController {
             return Result.error(e.getCode(), e.getMessage());
         }
     }
+
+    /**
+     * 根据角色 ID 获取角色权限 菜单列表
+     */
+    @GetMapping("/{id}/menus")
+    public Result<RoleVO> getRoleMenus(@PathVariable Long id) {
+        RoleVO roleVO = sysRoleService.getRoleVoById(id);
+        if (roleVO == null) {
+            return Result.error(404, "角色不存在或已删除");
+        }
+        return Result.success(roleVO);
+    }
+
+    /**
+     * 根据角色 ID 更新角色的菜单关联
+     */
+    @PostMapping("/{id}/menus")
+    public Result<Void> updateMenus(
+            @PathVariable Long id,
+            @RequestBody List<Long> menuIds) {
+        sysRoleService.updateRoleMenus(id, menuIds);
+        return Result.success();
+    }
+
+
 }

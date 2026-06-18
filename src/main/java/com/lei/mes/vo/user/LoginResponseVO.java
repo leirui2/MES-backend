@@ -5,6 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * 登录响应VO
  * @author lei
  */
 @Data

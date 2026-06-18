@@ -6,13 +6,21 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lei.mes.entity.user.SysRole;
+import com.lei.mes.entity.user.SysRoleMenu;
 import com.lei.mes.exception.BusinessException;
+import com.lei.mes.mapper.user.SysRoleMenuMapper;
 import com.lei.mes.request.user.RoleSaveRequest;
 import com.lei.mes.service.user.SysRoleService;
 import com.lei.mes.mapper.user.SysRoleMapper;
+import com.lei.mes.vo.user.RoleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色服务实现类
@@ -24,6 +32,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     implements SysRoleService{
+
+    @Autowired
+    private SysRoleMenuMapper sysRoleMenuMapper;
+
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
 
     /**
      * 分页查询角色列表
@@ -130,6 +144,27 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         update.setStatus(status);
         this.updateById(update);
         log.info("切换角色状态成功: ID={}, status={}", id, status);
+    }
+
+    @Override
+    public RoleVO getRoleVoById(Long roleId) {
+        return sysRoleMapper.getRoleVoById(roleId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateRoleMenus(Long roleId, List<Long> menuIds) {
+        // 先删除旧关联
+        sysRoleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>()
+                .eq(SysRoleMenu::getRoleId, roleId));
+
+        // 再插入新关联
+        if (menuIds != null && !menuIds.isEmpty()) {
+            List<SysRoleMenu> roleMenus = menuIds.stream()
+                    .map(menuId -> new SysRoleMenu(roleId, menuId))
+                    .collect(Collectors.toList());
+            sysRoleMenuMapper.insertBatch(roleMenus);
+        }
     }
 }
 

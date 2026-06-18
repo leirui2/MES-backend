@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.user.SysMenuMapper">
+
+    <!-- 查询所有菜单 -->
+    <select id="selectAllMenus" resultType="com.lei.mes.entity.user.SysMenu">
+        SELECT * FROM sys_menu WHERE is_delete = 0 ORDER BY sort_order ASC, id ASC
+    </select>
+
+    <!-- 查询角色的菜单 ID 列表 -->
+    <select id="selectMenuIdsByRoleId" resultType="java.lang.Long">
+        SELECT menu_id FROM sys_role_menu WHERE role_id = #{roleId}
+    </select>
+
+</mapper>

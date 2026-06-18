@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 用户详情 VO（返回给前端）
+ * 用户详情 VO
  * 不包含密码等敏感字段
  * @author lei
  */
