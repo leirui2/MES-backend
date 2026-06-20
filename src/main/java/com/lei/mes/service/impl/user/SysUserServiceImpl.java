@@ -170,7 +170,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         if (existing == null) {
             throw new BusinessException(404, "用户不存在或已删除");
         }
-
+        // 检查状态是否有效
+        if(status != 1 && status != 0){
+            throw new BusinessException(400, "状态无效");
+        }
         // 更新状态
         SysUser update = new SysUser();
         update.setId(id);
