@@ -1,4 +1,4 @@
-package com.lei.mes.entity.product;
+package com.lei.mes.entity.common;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -7,17 +7,17 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 产品表
+ * 物料表
  * @author lei
- * @TableName product
  */
-@TableName(value ="product")
+@TableName(value ="material")
 @Data
-public class Product implements Serializable {
+public class Material implements Serializable {
     /**
      * 主键，自增
      */
@@ -25,16 +25,16 @@ public class Product implements Serializable {
     private Long id;
 
     /**
-     * 产品编号，唯一
+     * 物料编号，唯一
      */
-    @TableField(value = "product_code")
-    private String productCode;
+    @TableField(value = "material_code")
+    private String materialCode;
 
     /**
-     * 产品名称
+     * 物料名称
      */
-    @TableField(value = "product_name")
-    private String productName;
+    @TableField(value = "material_name")
+    private String materialName;
 
     /**
      * 规格型号
@@ -43,16 +43,34 @@ public class Product implements Serializable {
     private String specification;
 
     /**
-     * 计量单位（个/箱/件）
+     * 计量单位
      */
     @TableField(value = "unit")
     private String unit;
 
     /**
-     * 产品分类（快充/普通/无线）
+     * 物料分类（芯片/外壳/线材/辅料）
      */
     @TableField(value = "category")
     private String category;
+
+    /**
+     * 当前库存数量
+     */
+    @TableField(value = "stock_qty")
+    private BigDecimal stockQty;
+
+    /**
+     * 安全库存下限
+     */
+    @TableField(value = "min_stock")
+    private BigDecimal minStock;
+
+    /**
+     * 单价
+     */
+    @TableField(value = "unit_price")
+    private BigDecimal unitPrice;
 
     /**
      * 状态：0-停用 1-启用

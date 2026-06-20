@@ -4,6 +4,7 @@ import com.lei.mes.common.Result;
 import com.lei.mes.entity.user.SysRole;
 import com.lei.mes.service.user.SysMenuService;
 import com.lei.mes.service.user.SysRoleService;
+import com.lei.mes.util.MailService;
 import com.lei.mes.vo.user.MenuTreeVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class MenuController {
 
     @Autowired
     private SysRoleService sysRoleService;
+
+
     /**
      * 查询菜单树（用于菜单管理页面）
      */
@@ -46,4 +49,5 @@ public class MenuController {
         List<MenuTreeVO> tree = sysMenuService.getAssignMenuTree(roleId);
         return Result.success(tree);
     }
+
 }

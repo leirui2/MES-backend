@@ -1,12 +1,12 @@
-package com.lei.mes.controller.product;
+package com.lei.mes.controller.common;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lei.mes.common.Result;
-import com.lei.mes.entity.product.Product;
+import com.lei.mes.entity.common.Product;
 import com.lei.mes.exception.BusinessException;
-import com.lei.mes.request.product.ProductSaveRequest;
-import com.lei.mes.request.product.ProductUpdateRequest;
-import com.lei.mes.service.product.ProductService;
+import com.lei.mes.request.common.ProductSaveRequest;
+import com.lei.mes.request.common.ProductUpdateRequest;
+import com.lei.mes.service.common.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @author lei
  */
 @RestController
-@RequestMapping("/api/sys/product")
+@RequestMapping("/api/common/product")
 public class ProductController {
     @Autowired
     private ProductService productService;

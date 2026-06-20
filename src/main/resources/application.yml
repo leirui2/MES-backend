@@ -21,6 +21,21 @@ spring:
           min-idle: 0     # 最小空闲连接
           max-wait: 1000ms  # 最大等待时间
 
+  # ===== 邮件（SMTP）配置 =====
+  mail:
+    host: ${SMTP_HOST:smtp.qq.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:1743477302@qq.com}
+    password: ${SMTP_PASSWORD:mcaceeobvdhgcgad}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 mybatis-plus:
   # 实体类扫描包路径
@@ -42,3 +57,22 @@ jwt:
   secret: Y2hhcmdlci1tZXMtc2VjcmV0LWtleS1tdXN0LWJlLXN1ZmZpY2llbnRseS1sb25nLWZvci1zZWN1cml0eQ==  # 需要 ≥32 字符的 Base64 字符串
   access-expiration: 86400000      # 访问 Token 过期时间：24小时（毫秒）
   refresh-expiration: 604800000    # 刷新 Token 过期时间：7天（毫秒）
+
+
+# ===== x-file-storage 文件存储配置 =====
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: minio-1 #默认使用的存储平台
+    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    #对应平台的配置写在这里，注意缩进要对齐
+    minio:
+      - platform: minio-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: NNGwh2CHvyFMMJvfJvad
+        secret-key: 2vuce5xwmOvUvwM5K6tvitTEnZIHxyMsI3NIl7op
+        end-point: http://10.126.126.1:8009
+        bucket-name: leirui-oss
+        domain: http://10.126.126.1:8009/leirui-oss/ # 访问域名，注意" /"结尾，例如：http://minio.abc.com/abc/
+        base-path: Mes-backend/ # 基础路径
+
+

@@ -1,17 +1,16 @@
-package com.lei.mes.service.impl.product;
+package com.lei.mes.service.impl.common;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lei.mes.entity.product.Product;
-import com.lei.mes.entity.user.SysRole;
+import com.lei.mes.entity.common.Product;
 import com.lei.mes.exception.BusinessException;
-import com.lei.mes.request.product.ProductSaveRequest;
-import com.lei.mes.request.product.ProductUpdateRequest;
-import com.lei.mes.service.product.ProductService;
-import com.lei.mes.mapper.product.ProductMapper;
+import com.lei.mes.request.common.ProductSaveRequest;
+import com.lei.mes.request.common.ProductUpdateRequest;
+import com.lei.mes.service.common.ProductService;
+import com.lei.mes.mapper.common.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.lei.mes.request.product;
+package com.lei.mes.request.common;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import jakarta.validation.constraints.NotBlank;

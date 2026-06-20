@@ -13,6 +13,7 @@ import com.lei.mes.request.user.UserLoginRequest;
 import com.lei.mes.request.user.UserSaveRequest;
 import com.lei.mes.service.user.SysUserService;
 import com.lei.mes.util.JwtUtils;
+import com.lei.mes.util.MailService;
 import com.lei.mes.vo.user.LoginResponseVO;
 import com.lei.mes.vo.user.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     //注入加盐算法
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private MailService mailService;
 
     //final修饰必须 构造函数注入 SysUserMapper
     public SysUserServiceImpl(SysUserMapper sysUserMapper, SysUserRoleMapper sysUserRoleMapper) {

@@ -9,6 +9,7 @@ import com.lei.mes.vo.user.MenuTreeVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,6 +26,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
 
     @Autowired
     private SysRoleMenuMapper sysRoleMenuMapper;
+
+
 
     @Override
     public List<MenuTreeVO> getMenuTree() {
@@ -66,6 +69,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         // 4. 构建树形结构
         return buildTree(menuVOs, 0L);
     }
+
 
     /**
      * 递归构建树形结构

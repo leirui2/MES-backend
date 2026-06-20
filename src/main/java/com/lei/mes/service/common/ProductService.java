@@ -1,10 +1,10 @@
-package com.lei.mes.service.product;
+package com.lei.mes.service.common;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lei.mes.entity.product.Product;
+import com.lei.mes.entity.common.Product;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.lei.mes.request.product.ProductSaveRequest;
-import com.lei.mes.request.product.ProductUpdateRequest;
+import com.lei.mes.request.common.ProductSaveRequest;
+import com.lei.mes.request.common.ProductUpdateRequest;
 import jakarta.validation.Valid;
 
 /**

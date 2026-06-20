@@ -85,15 +85,15 @@
 ## 第三阶段：基础建模模块（第 2 周）
 
 ### Task 3.1 - 产品管理 🔴
-- [ ] 创建 `Product` 实体类
-- [ ] 创建 `ProductMapper` + `ProductService` + `ProductController`
-- [ ] 实现产品 CRUD + 分页查询 + 按分类筛选
-- [ ] 实现产品编号生成规则
+- [x] 创建 `Product` 实体类
+- [x] 创建 `ProductMapper` + `ProductService` + `ProductController`
+- [x] 实现产品 CRUD + 分页查询 + 按分类筛选
+- [x] 实现产品编号生成规则
 
 ### Task 3.2 - 物料管理 🔴
-- [ ] 创建 `Material` 实体类
-- [ ] 创建 `MaterialMapper` + `MaterialService` + `MaterialController`
-- [ ] 实现物料 CRUD + 分页查询 + 库存预警（低于安全库存标记）
+- [x] 创建 `Material` 实体类
+- [x] 创建 `MaterialMapper` + `MaterialService` + `MaterialController`
+- [x] 实现物料 CRUD + 分页查询 + 库存预警（低于安全库存标记）
 
 ### Task 3.3 - BOM 管理 🔴
 - [ ] 创建 `Bom` 实体类 + `BomItem` 实体类

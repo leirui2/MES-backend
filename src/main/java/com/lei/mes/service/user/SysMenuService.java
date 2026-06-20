@@ -19,4 +19,5 @@ public interface SysMenuService extends IService<SysMenu> {
      * 查询角色可分配的菜单树（带选中状态）
      */
     List<MenuTreeVO> getAssignMenuTree(Long roleId);
+
 }
