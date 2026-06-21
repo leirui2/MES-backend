@@ -1,37 +1,33 @@
 package com.lei.mes.entity.common;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
+import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
- * BOM 实体类
+ * 车间表
  * @author lei
  */
-@TableName(value = "bom")
+@TableName(value = "workshop")
 @Data
-public class Bom implements Serializable {
+public class Workshop implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField(value = "product_id")
-    private Long productId;
+    @TableField(value = "workshop_code")
+    private String workshopCode;
 
-    @TableField(value = "product_code")
-    private String productCode;
+    @TableField(value = "workshop_name")
+    private String workshopName;
 
-    @TableField(value = "version")
-    private String version;
+    @TableField(value = "location")
+    private String location;
 
     @TableField(value = "status")
-    private Integer status;
+    private Integer status;  // 0-停用 1-启用
 
     @TableField(value = "created_at")
     private Date createdAt;

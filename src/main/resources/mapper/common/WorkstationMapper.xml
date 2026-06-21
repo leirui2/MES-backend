@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.common.WorkstationMapper">
+
+    <!-- 分页查询工位 -->
+    <select id="getStationPage" resultType="com.lei.mes.vo.common.WorkstationVO">
+        SELECT ws.id, ws.station_code, ws.station_name, ws.line_id,
+               ws.station_type, ws.status, ws.created_at, ws.updated_at
+        FROM workstation ws
+        WHERE ws.is_delete = 0
+        <if test="stationName != null and stationName != ''">
+            AND ws.station_name LIKE CONCAT('%', #{stationName}, '%')
+        </if>
+        <if test="lineId != null">
+            AND ws.line_id = #{lineId}
+        </if>
+        ORDER BY ws.created_at DESC
+    </select>
+
+    <!-- 查询工位详情 -->
+    <select id="getStationDetail" resultType="com.lei.mes.vo.common.WorkstationVO">
+        SELECT ws.id, ws.station_code, ws.station_name, ws.line_id,
+               ws.station_type, ws.status, ws.created_at, ws.updated_at
+        FROM workstation ws
+        WHERE ws.id = #{id} AND ws.is_delete = 0
+    </select>
+
+    <!-- 查询所有工位（下拉选择用） -->
+    <select id="getAllStations" resultType="com.lei.mes.vo.common.WorkstationVO">
+        SELECT ws.id, ws.station_code, ws.station_name, ws.line_id
+        FROM workstation ws
+        WHERE ws.is_delete = 0
+        ORDER BY ws.station_code ASC
+    </select>
+
+</mapper>

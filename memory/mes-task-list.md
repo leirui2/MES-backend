@@ -103,10 +103,10 @@
 - [x] 实现 BOM 查询（带明细列表）
 
 ### Task 3.4 - 工艺路线管理 🔴
-- [ ] 创建 `ProcessRoute` 实体类 + `ProcessStep` 实体类
-- [ ] 创建 `ProcessRouteMapper` + `ProcessRouteService`
-- [ ] 实现工艺路线 CRUD + 工序排序管理
-- [ ] 实现按产品ID查询工艺路线（ + 工序）
+- [x] 创建 `ProcessRoute` 实体类 + `ProcessStep` 实体类
+- [x] 创建 `ProcessRouteMapper` + `ProcessRouteService`
+- [x] 实现工艺路线 CRUD + 工序排序管理
+- [x] 实现按产品ID查询工艺路线（ + 工序）
 
 ### Task 3.5 - 车间/产线/工位管理 🟡
 - [ ] 创建 `Workshop` / `ProductionLine` / `Workstation` 实体类

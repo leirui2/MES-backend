@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.common.ProductionLineMapper">
+
+    <!-- 分页查询产线 -->
+    <select id="getLinePage" resultType="com.lei.mes.vo.common.ProductionLineVO">
+        SELECT pl.id, pl.line_code, pl.line_name, pl.workshop_id,
+               pl.capacity_per_day, pl.status, pl.created_at, pl.updated_at
+        FROM production_line pl
+        WHERE pl.is_delete = 0
+        <if test="lineName != null and lineName != ''">
+            AND pl.line_name LIKE CONCAT('%', #{lineName}, '%')
+        </if>
+        <if test="workshopId != null">
+            AND pl.workshop_id = #{workshopId}
+        </if>
+        ORDER BY pl.created_at DESC
+    </select>
+
+    <!-- 查询产线详情（含工位） -->
+    <select id="getLineDetail" resultMap="LineDetailResultMap">
+        SELECT pl.id, pl.line_code, pl.line_name, pl.workshop_id,
+               pl.capacity_per_day, pl.status, pl.created_at, pl.updated_at,
+               ws.id AS stationId, ws.station_code, ws.station_name,
+               ws.line_id, ws.station_type, ws.status AS stationStatus,
+               ws.created_at AS stationCreated_at, ws.updated_at AS stationUpdated_at
+        FROM production_line pl
+        LEFT JOIN workstation ws ON pl.id = ws.line_id AND ws.is_delete = 0
+        WHERE pl.id = #{id} AND pl.is_delete = 0
+        ORDER BY ws.station_code ASC
+    </select>
+
+    <!-- 查询所有产线（下拉选择用） -->
+    <select id="getAllLines" resultType="com.lei.mes.vo.common.ProductionLineVO">
+        SELECT pl.id, pl.line_code, pl.line_name, pl.workshop_id
+        FROM production_line pl
+        WHERE pl.is_delete = 0
+        ORDER BY pl.line_code ASC
+    </select>
+
+    <resultMap id="LineDetailResultMap" type="com.lei.mes.vo.common.ProductionLineVO">
+        <id property="id" column="id"/>
+        <result property="lineCode" column="line_code"/>
+        <result property="lineName" column="line_name"/>
+        <result property="workshopId" column="workshop_id"/>
+        <result property="capacityPerDay" column="capacity_per_day"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <collection property="workstations" ofType="com.lei.mes.vo.common.WorkstationVO">
+            <id property="id" column="stationId"/>
+            <result property="stationCode" column="station_code"/>
+            <result property="stationName" column="station_name"/>
+            <result property="lineId" column="line_id"/>
+            <result property="stationType" column="station_type"/>
+            <result property="status" column="stationStatus"/>
+            <result property="createdAt" column="stationCreated_at"/>
+            <result property="updatedAt" column="stationUpdated_at"/>
+        </collection>
+    </resultMap>
+
+</mapper>

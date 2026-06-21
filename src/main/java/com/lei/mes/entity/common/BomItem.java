@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class BomItem implements Serializable {
 
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @TableField(value = "bom_id")
