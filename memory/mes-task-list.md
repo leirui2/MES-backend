@@ -96,17 +96,17 @@
 - [x] 实现物料 CRUD + 分页查询 + 库存预警（低于安全库存标记）
 
 ### Task 3.3 - BOM 管理 🔴
-- [ ] 创建 `Bom` 实体类 + `BomItem` 实体类
-- [ ] 创建 `BomMapper` + `BomService`（含明细联查）
-- [ ] 实现 BOM 新建（主表 + 明细批量新增）
-- [ ] 实现 BOM 版本管理（草稿→生效→作废）
-- [ ] 实现 BOM 查询（带明细列表）
+- [x] 创建 `Bom` 实体类 + `BomItem` 实体类
+- [x] 创建 `BomMapper` + `BomService`（含明细联查）
+- [x] 实现 BOM 新建（主表 + 明细批量新增）
+- [x] 实现 BOM 版本管理（草稿→生效→作废）
+- [x] 实现 BOM 查询（带明细列表）
 
 ### Task 3.4 - 工艺路线管理 🔴
 - [ ] 创建 `ProcessRoute` 实体类 + `ProcessStep` 实体类
 - [ ] 创建 `ProcessRouteMapper` + `ProcessRouteService`
 - [ ] 实现工艺路线 CRUD + 工序排序管理
-- [ ] 实现按产品查询工艺路线
+- [ ] 实现按产品ID查询工艺路线（ + 工序）
 
 ### Task 3.5 - 车间/产线/工位管理 🟡
 - [ ] 创建 `Workshop` / `ProductionLine` / `Workstation` 实体类

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.common.BomMapper">
+
+    <select id="getBomPage" resultType="com.lei.mes.vo.common.BomVO">
+        SELECT
+        b.id, b.product_id, b.product_code,
+        b.version, b.status,
+        b.created_at, b.updated_at
+        FROM bom b
+        WHERE b.is_delete = 0
+        <if test="productCode != null and productCode != ''">
+            AND b.product_code LIKE CONCAT('%', #{productCode}, '%')
+        </if>
+        <if test="version != null and version != ''">
+            AND b.version = #{version}
+        </if>
+        <if test="status != null">
+            AND b.status = #{status}
+        </if>
+        ORDER BY b.created_at DESC
+    </select>
+
+    <select id="getBomDetail" resultMap="BomDetailResultMap">
+        SELECT
+            b.id, b.product_id, b.product_code,
+            b.version, b.status,
+            b.created_at, b.updated_at,
+            bi.id AS itemId, bi.bom_id, bi.material_id,
+            bi.material_code, bi.material_name,
+            bi.quantity, bi.loss_rate, bi.sort_order
+        FROM bom b
+                 LEFT JOIN bom_item bi ON b.id = bi.bom_id AND bi.is_delete = 0
+        WHERE b.id = #{id} AND b.is_delete = 0
+    </select>
+
+    <resultMap id="BomDetailResultMap" type="com.lei.mes.vo.common.BomVO">
+        <id property="id" column="id"/>
+        <result property="productCode" column="product_code"/>
+        <result property="productId" column="product_id"/>
+        <result property="version" column="version"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <collection property="items" ofType="com.lei.mes.vo.common.BomItemVO">
+            <id property="id" column="itemId"/>
+            <result property="bomId" column="bom_id"/>
+            <result property="materialId" column="material_id"/>
+            <result property="materialCode" column="material_code"/>
+            <result property="materialName" column="material_name"/>
+            <result property="quantity" column="quantity"/>
+            <result property="lossRate" column="loss_rate"/>
+            <result property="sortOrder" column="sort_order"/>
+        </collection>
+    </resultMap>
+
+
+</mapper>

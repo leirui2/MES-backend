@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.common.ProcessRouteMapper">
+
+    <!-- 分页查询工艺路线 -->
+    <select id="getRoutePage" resultType="com.lei.mes.vo.common.ProcessRouteVO">
+        SELECT
+        pr.id, pr.route_name, pr.product_id, pr.status,
+        pr.created_at, pr.updated_at
+        FROM process_route pr
+        WHERE pr.is_delete = 0
+        <if test="routeName != null and routeName != ''">
+            AND pr.route_name LIKE CONCAT('%', #{routeName}, '%')
+        </if>
+        <if test="productId != null">
+            AND pr.product_id = #{productId}
+        </if>
+        ORDER BY pr.created_at DESC
+    </select>
+
+    <!-- 查询工艺路线详情（含工序） -->
+    <select id="getRouteDetail" resultMap="RouteDetailResultMap">
+        SELECT
+            pr.id, pr.route_name, pr.product_id, pr.status,
+            pr.created_at, pr.updated_at,
+            ps.id AS stepId, ps.route_id, ps.step_code,
+            ps.step_name, ps.workstation_id, ps.sort_order,
+            ps.standard_time, ps.qc_required
+        FROM process_route pr
+                 LEFT JOIN process_step ps ON pr.id = ps.route_id AND ps.is_delete = 0
+        WHERE pr.id = #{id} AND pr.is_delete = 0
+        ORDER BY ps.sort_order ASC
+    </select>
+
+    <!-- 按产品ID查询工艺路线（包含工序） -->
+    <select id="getRouteByProduct" resultMap="RouteDetailResultMap">
+        SELECT
+            pr.id, pr.route_name, pr.product_id, pr.status,
+            pr.created_at, pr.updated_at,
+            ps.id AS stepId, ps.route_id, ps.step_code,
+            ps.step_name, ps.workstation_id, ps.sort_order,
+            ps.standard_time, ps.qc_required
+        FROM process_route pr
+                 LEFT JOIN process_step ps ON pr.id = ps.route_id AND ps.is_delete = 0
+        WHERE pr.product_id = #{productId} AND pr.is_delete = 0
+        ORDER BY ps.sort_order ASC
+    </select>
+
+
+    <resultMap id="RouteDetailResultMap" type="com.lei.mes.vo.common.ProcessRouteVO">
+        <id property="id" column="id"/>
+        <result property="routeName" column="route_name"/>
+        <result property="productId" column="product_id"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <collection property="steps" ofType="com.lei.mes.vo.common.ProcessStepVO">
+            <id property="id" column="stepId"/>
+            <result property="routeId" column="route_id"/>
+            <result property="stepCode" column="step_code"/>
+            <result property="stepName" column="step_name"/>
+            <result property="workstationId" column="workstation_id"/>
+            <result property="sortOrder" column="sort_order"/>
+            <result property="standardTime" column="standard_time"/>
+            <result property="qcRequired" column="qc_required"/>
+        </collection>
+    </resultMap>
+
+
+</mapper>

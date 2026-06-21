@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.common.BomItemMapper">
+
+    <!-- 根据 BOM ID 查询明细 -->
+    <select id="selectByBomId" resultType="com.lei.mes.entity.common.BomItem">
+        SELECT * FROM bom_item WHERE bom_id = #{bomId} AND is_delete = 0 ORDER BY id ASC
+    </select>
+
+    <!-- 批量插入明细 -->
+    <insert id="insertBatch">
+        INSERT INTO bom_item (bom_id, material_id, material_code, material_name,
+        quantity, loss_rate, sort_order)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.bomId}, #{item.materialId}, #{item.materialCode}, #{item.materialName},
+            #{item.quantity}, #{item.lossRate}, #{item.sortOrder})
+        </foreach>
+    </insert>
+
+
+</mapper>

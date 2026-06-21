@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lei.mes.mapper.common.ProcessStepMapper">
+
+    <!-- 根据工艺路线 ID 查询工序 -->
+    <select id="selectByRouteId" resultType="com.lei.mes.entity.common.ProcessStep">
+        SELECT * FROM process_step
+        WHERE route_id = #{routeId} AND is_delete = 0
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 批量插入工序 -->
+    <insert id="insertBatch">
+        INSERT INTO process_step (route_id, step_code, step_name,
+        workstation_id, sort_order, standard_time,
+        qc_required, is_delete)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.routeId}, #{item.stepCode}, #{item.stepName},
+            #{item.workstationId}, #{item.sortOrder}, #{item.standardTime},
+            #{item.qcRequired}, 0)
+        </foreach>
+    </insert>
+
+</mapper>
