@@ -1,6 +1,7 @@
 package com.lei.mes.controller.user;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lei.mes.annotation.OperationLog;
 import com.lei.mes.common.Result;
 import com.lei.mes.exception.BusinessException;
 import com.lei.mes.request.user.UserSaveRequest;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 /**
- * 用户管理 Controller
+ * 用户管理
  * @author lei
  */
 @Slf4j
@@ -70,6 +71,7 @@ public class UserController {
     /**
      * 新增用户
      */
+    @OperationLog(operation = "ADD", value = "新增用户",saveParams = true, saveResult = true)
     @PostMapping
     public Result<Void> add(@Valid @RequestBody UserSaveRequest request) {
         try {
@@ -83,6 +85,7 @@ public class UserController {
     /**
      * 编辑用户
      */
+    @OperationLog(operation = "UPDATE", value = "编辑用户",saveParams = true)
     @PutMapping
     public Result<Void> update(@Valid @RequestBody UserSaveRequest request) {
         try {
@@ -96,6 +99,7 @@ public class UserController {
     /**
      * 删除用户
      */
+    @OperationLog(operation = "DELETE", value = "删除用户",saveParams = true)
     @DeleteMapping("/{id}")
     public Result<Void> delete(@PathVariable Long id) {
         try {
@@ -109,6 +113,7 @@ public class UserController {
     /**
      * 切换用户状态（启用/禁用）
      */
+    @OperationLog(operation = "UPDATE", value = "切换用户状态",saveParams = true)
     @PutMapping("/{id}/status")
     public Result<Void> changeStatus(@PathVariable Long id, @RequestParam Integer status) {
         try {

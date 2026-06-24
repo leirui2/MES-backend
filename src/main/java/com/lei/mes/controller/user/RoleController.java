@@ -23,7 +23,7 @@ import java.util.List;
 
 
 /**
- * 角色管理 Controller
+ * 角色管理
  * @author lei
  */
 @Slf4j
